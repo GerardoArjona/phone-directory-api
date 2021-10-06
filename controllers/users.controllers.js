@@ -42,7 +42,7 @@ const addContact = async (req, res) => {
         });
     }
 
-    User.findByIdAndUpdate(req.params.userId, 
+    User.findByIdAndUpdate(req.user._id, 
         { 
             "$push": {
                 "contacts": req.body
@@ -52,7 +52,7 @@ const addContact = async (req, res) => {
     .then(user => {
         if(!user) {
             return res.status(404).send({
-                message: `User not found with id ${req.params.userId}. Contact not added.`
+                message: `User not found with id ${req.user._id}. Contact not added.`
             });
         }
         res.status(202).send(user);
@@ -60,37 +60,26 @@ const addContact = async (req, res) => {
         console.log(err)
         if(err.kind === 'ObjectId') {
             return res.status(404).send({
-                message: `User not found with id ${req.params.userId}. Contact not added.`
+                message: `User not found with id ${req.user._id}. Contact not added.`
             });                
         }
         return res.status(500).send({
-            message: `Error adding contact to user with id ${req.params.userId}. Contact not added.`
+            message: `Error adding contact to user with id ${req.user._id}. Contact not added.`
         });
     });
 }
 
 const listContactsFromUser = async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-    let userWithContacts = await User.findOne({ _id: req.params.userId })
+    let userWithContacts = await User.findOne({ _id: req.user._id })
                                 .select('contacts');
     userWithContacts.contacts.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))                            
 	res.status(200).json(userWithContacts)
-}
-
-const listContacts = async (req, res) => {
-    res.setHeader('Content-Type', 'application/json');
-    const userWithContacts = await User.find()
-                                .select('contacts');
-    let allContacts = []
-    userWithContacts.forEach(user => user.contacts.forEach(contact => allContacts.push(contact)));
-    allContacts.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))                            
-	res.status(200).json(allContacts)
 }
 
 module.exports = {
     signUp,
     signin,
     addContact,
-    listContactsFromUser,
-    listContacts
+    listContactsFromUser
 }
