@@ -6,6 +6,7 @@ const { authenticationMiddleware } = require('../middlewares/authenticateToken')
 const router = express.Router();
 
 router.post('/', users.signUp); //Create User
-router.post('/contact/:userId', authenticationMiddleware, users.addContact); //Create Contact
+router.post('/contacts/:userId', authenticationMiddleware, users.addContact); //Create Contact
+router.get('/contacts/:userId', authenticationMiddleware, users.listContacts)
 
 module.exports = router

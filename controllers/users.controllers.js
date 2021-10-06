@@ -69,8 +69,18 @@ const addContact = async (req, res) => {
     });
 }
 
+const listContacts = async (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    let userWithContacts = await User.findOne({ _id: req.params.userId })
+                                .select('contacts')
+                                .sort('name');
+    userWithContacts.contacts.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))                            
+	res.status(200).json(userWithContacts)
+}
+
 module.exports = {
     signUp,
     signin,
-    addContact
+    addContact,
+    listContacts
 }
