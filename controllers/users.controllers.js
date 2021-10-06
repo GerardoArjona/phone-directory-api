@@ -7,7 +7,7 @@ const signUp = async (req, res) => {
 
     if(!req.body) {
         return res.status(400).send({
-            message: "User content can not be empty"
+            message: "User info cannot be empty"
         });
     }
 
@@ -33,7 +33,7 @@ const signin = async (req, res) => {
 const addContact = async (req, res) => {
     if(!req.body) {
         return res.status(400).send({
-            message: "User content can not be empty"
+            message: "Contact can not be empty"
         });
     }
 
@@ -47,7 +47,7 @@ const addContact = async (req, res) => {
     .then(user => {
         if(!user) {
             return res.status(404).send({
-                message: "User not found with id " + req.params.userId
+                message: `User not found with id ${req.params.userId}. Contact not added.`
             });
         }
         res.send(user);
@@ -55,11 +55,11 @@ const addContact = async (req, res) => {
         console.log(err)
         if(err.kind === 'ObjectId') {
             return res.status(404).send({
-                message: "User not found with id " + req.params.userId
+                message: `User not found with id ${req.params.userId}. Contact not added.`
             });                
         }
         return res.status(500).send({
-            message: "Error updating company with id " + req.params.userId
+            message: `Error adding contact to user with id ${req.params.userId}. Contact not added.`
         });
     });
 }
