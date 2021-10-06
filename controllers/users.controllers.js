@@ -30,7 +30,42 @@ const signin = async (req, res) => {
 }); 
 }
 
+const addContact = async (req, res) => {
+    if(!req.body) {
+        return res.status(400).send({
+            message: "User content can not be empty"
+        });
+    }
+
+    User.findByIdAndUpdate(req.params.userId, 
+        { 
+            "$push": {
+                "contacts": req.body
+            }
+        }
+        , {new: true})
+    .then(user => {
+        if(!user) {
+            return res.status(404).send({
+                message: "User not found with id " + req.params.userId
+            });
+        }
+        res.send(user);
+    }).catch(err => {
+        console.log(err)
+        if(err.kind === 'ObjectId') {
+            return res.status(404).send({
+                message: "User not found with id " + req.params.userId
+            });                
+        }
+        return res.status(500).send({
+            message: "Error updating company with id " + req.params.userId
+        });
+    });
+}
+
 module.exports = {
     signUp,
-	signin
+    signin,
+    addContact
 }

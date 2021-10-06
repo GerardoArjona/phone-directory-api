@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt =  require('bcrypt');
+const ContactSchema = require('./contacts');
 
 const Schema = mongoose.Schema
 
@@ -19,7 +20,10 @@ const UserSchema =  new Schema({
 	password:{
 		type:String,
 		required:true
-	}
+	},
+	contacts: { 
+        type:[ContactSchema]
+    }
 
 },{timestamps:true,collection:"users"});
 
