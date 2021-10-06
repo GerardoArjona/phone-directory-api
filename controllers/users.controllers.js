@@ -16,7 +16,7 @@ const signUp = async (req, res) => {
         res.status(400).json(e) 
     })
 	if (!user) res.status(400).json(e)
-	res.status(201).json(user)
+	res.status(202).json(user)
 }
 
 const signin = async (req, res) => {
