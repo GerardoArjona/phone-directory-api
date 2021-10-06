@@ -4,6 +4,7 @@ const { createToken } = require('../utils/createToken')
 
 const signUp = async (req, res) => {
     console.log(req.body)
+    res.setHeader('Content-Type', 'application/json');
 
     if(!req.body) {
         return res.status(400).send({
@@ -20,6 +21,8 @@ const signUp = async (req, res) => {
 }
 
 const signin = async (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+
 	authenticate(req.body).then((user) => {
 		if (!user) res.send(404).json({ message: "User not found" });
 		const token = createToken(user);
@@ -31,6 +34,8 @@ const signin = async (req, res) => {
 }
 
 const addContact = async (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+
     if(!req.body) {
         return res.status(400).send({
             message: "Contact can not be empty"
@@ -50,7 +55,7 @@ const addContact = async (req, res) => {
                 message: `User not found with id ${req.params.userId}. Contact not added.`
             });
         }
-        res.send(user);
+        res.status(202).send(user);
     }).catch(err => {
         console.log(err)
         if(err.kind === 'ObjectId') {
