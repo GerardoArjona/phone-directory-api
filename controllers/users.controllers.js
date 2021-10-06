@@ -73,13 +73,37 @@ const listContactsFromUser = async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     let userWithContacts = await User.findOne({ _id: req.user._id })
                                 .select('contacts');
-    userWithContacts.contacts.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))                            
+    if(!userWithContacts) {
+        return res.status(404).send({
+            message: `Contacts not found`
+        });                
+    }
+    userWithContacts.contacts.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))                         
 	res.status(200).json(userWithContacts)
+}
+
+const getContactById = async (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    const userWithContacts = await User.findOne({ _id: req.user._id })
+                                .select('contacts');
+    if(!userWithContacts) {
+        return res.status(404).send({
+            message: `Contacts not found`
+        });                
+    }
+    let foundContact = userWithContacts.contacts.find(contact => contact._id.toString() === req.params.contactId)
+    if(!foundContact) {
+        return res.status(404).send({
+            message: `Contact not found`
+        });                
+    }                         
+	res.status(200).json(foundContact)
 }
 
 module.exports = {
     signUp,
     signin,
     addContact,
-    listContactsFromUser
+    listContactsFromUser,
+    getContactById
 }
