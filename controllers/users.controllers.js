@@ -69,18 +69,28 @@ const addContact = async (req, res) => {
     });
 }
 
-const listContacts = async (req, res) => {
+const listContactsFromUser = async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     let userWithContacts = await User.findOne({ _id: req.params.userId })
-                                .select('contacts')
-                                .sort('name');
+                                .select('contacts');
     userWithContacts.contacts.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))                            
 	res.status(200).json(userWithContacts)
+}
+
+const listContacts = async (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    const userWithContacts = await User.find()
+                                .select('contacts');
+    let allContacts = []
+    userWithContacts.forEach(user => user.contacts.forEach(contact => allContacts.push(contact)));
+    allContacts.sort((a,b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))                            
+	res.status(200).json(allContacts)
 }
 
 module.exports = {
     signUp,
     signin,
     addContact,
+    listContactsFromUser,
     listContacts
 }
