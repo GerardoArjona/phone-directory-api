@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const cors = require('cors');
 
+const routes =  require('./routes');
+
 const MONGO = process.env.MONGODB_URI
 
 mongoose.connect(MONGO,{ useNewUrlParser: true, useUnifiedTopology: true });
@@ -16,13 +18,15 @@ mongo.on('error', (error) => console.log(error))
 
 const app = express()
 
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 3000
 
 app.use(helmet())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cors())
 app.use(morgan('dev'));
+
+app.use('/api/v1',routes)
 
 app.get('/',(req,res) => {
 	res.send("Phone Directory API is running!")
