@@ -10,5 +10,6 @@ router.post('/contacts', authenticationMiddleware, users.addContact); //Create C
 router.get('/contacts', authenticationMiddleware, users.listContactsFromUser) // Get all contacts from user
 router.get('/contacts/:contactId', authenticationMiddleware, users.getContactById) // Get contact by id
 router.delete('/contacts/:contactId', authenticationMiddleware, users.deleteContactById) // Get contact by id
+router.put('/contacts/:contactId', authenticationMiddleware, users.updateContactById) // Get contact by id
 
 module.exports = router

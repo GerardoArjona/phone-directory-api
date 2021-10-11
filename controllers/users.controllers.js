@@ -108,7 +108,6 @@ const deleteContactById = async (req, res) => {
           'contacts':{ '_id': new ObjectId(req.params.contactId) }
       }
     }, {new: true}).select('contacts');
-  console.log(userWithContacts);
     if(!userWithContacts) {
         return res.status(404).send({
             message: `Contacts not found`
@@ -117,11 +116,27 @@ const deleteContactById = async (req, res) => {
     res.status(204);
 }
 
+const updateContactById = async (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  const user = await User.findByIdAndUpdate({ _id: req.user._id, "contacts._id": req.params.contactId }, {
+    '$set': {
+        'contacts': req.body
+    }
+  }, {new: true}).select('contacts');
+  if(!user) {
+      return res.status(404).send({
+          message: `Contacts not found`
+      });                
+  }
+  res.status(200).json(user);
+}
+
 module.exports = {
     signUp,
     signin,
     addContact,
     listContactsFromUser,
     getContactById,
-    deleteContactById
+    deleteContactById,
+    updateContactById
 }
