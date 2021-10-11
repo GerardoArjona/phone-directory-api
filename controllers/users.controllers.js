@@ -1,3 +1,4 @@
+const ObjectId = require('mongodb').ObjectID;
 const User = require('../models/users.js');
 const { authenticate } = require('../utils/authenticate')
 const { createToken } = require('../utils/createToken')
@@ -100,10 +101,27 @@ const getContactById = async (req, res) => {
 	res.status(200).json(foundContact)
 }
 
+const deleteContactById = async (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+    const userWithContacts = await User.findByIdAndUpdate({ _id: req.user._id }, {
+      '$pull': {
+          'contacts':{ '_id': new ObjectId(req.params.contactId) }
+      }
+    }, {new: true}).select('contacts');
+  console.log(userWithContacts);
+    if(!userWithContacts) {
+        return res.status(404).send({
+            message: `Contacts not found`
+        });                
+    }
+    res.status(204);
+}
+
 module.exports = {
     signUp,
     signin,
     addContact,
     listContactsFromUser,
-    getContactById
+    getContactById,
+    deleteContactById
 }

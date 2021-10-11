@@ -7,5 +7,4 @@ const router = express.Router();
 
 router.use('/users', usersRoutes);
 router.use('/auth', authUserRoutes);
-
 module.exports = router;
