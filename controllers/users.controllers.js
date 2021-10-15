@@ -113,22 +113,33 @@ const deleteContactById = async (req, res) => {
             message: `Contacts not found`
         });                
     }
-    res.status(204);
+    res.status(204).json(userWithContacts);
 }
 
 const updateContactById = async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
-  const user = await User.findByIdAndUpdate({ _id: req.user._id, "contacts._id": req.params.contactId }, {
-    '$set': {
-        'contacts': req.body
+  User.findById(req.user._id, function(err, result) {
+    if (!err) {
+      if (!result){
+        res.status(404).send('Contact was not found');
+      }
+      else{
+        result.contacts.id(req.params.contactId).name = req.body.name,
+        result.contacts.id(req.params.contactId).number = req.body.number,
+        result.contacts.id(req.params.contactId).addressLines = req.body.addressLines,
+        result.markModified('contacts'); 
+        result.save(function(err, saveresult) {
+          if (!err) {
+            res.status(200).send(saveresult);
+          } else {
+            res.status(400).send(err.message);
+          }
+        });
+      }
+    } else {
+      res.status(400).send(err.message);
     }
-  }, {new: true}).select('contacts');
-  if(!user) {
-      return res.status(404).send({
-          message: `Contacts not found`
-      });                
-  }
-  res.status(200).json(user);
+  });
 }
 
 module.exports = {
