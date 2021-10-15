@@ -17,6 +17,8 @@ USER node
 RUN npm install
 USER root
 ENV PORT=8000
+ENV MONGODB_URI=mongodb+srv://admin:admin@cluster0.ejeny.mongodb.net/PhoneDirectory?retryWrites=true&w=majority
+ENV SECRET_KEY=8PpdPkMixMzzRlkWjLWR
 EXPOSE 8000
 USER node
 CMD ["node", "app.js"]
